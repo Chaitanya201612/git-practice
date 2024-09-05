@@ -5,7 +5,7 @@
 FRUITS=("APPLE" "KIWI" "ORANGE" "Bery") #Array
 
 echo "First fruti is: ${FRUITS[0]}"
-echo "Second fruti is: ${fRUITS[1]}"
+echo "Second fruti is: ${FRUITS[1]}"
 echo "Third fruti is: ${FRUITS[2]}"
 echo "Fourth fruti is: ${FRUITS[3]}"
 
