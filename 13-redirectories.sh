@@ -10,11 +10,12 @@ USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
+Y="\e[33m"
 
 CHECK_ROOT(){
     if [ $USERID -ne 0 ]
     then
-    echo -e "$R pleae run this script with root privileges $N" &>>$LOG_FILE
+    echo -e "$R pleae run this script with root privileges $N" | tee -a $LOG_FILE
     exit 1
     fi
 }
@@ -22,24 +23,36 @@ CHECK_ROOT(){
 VALIDATE(){
     if [$1 -ne 0]
     then
-    echo -e "$2 is...$R FAILED $N" &>>$LOG_FILE
+    echo -e "$2 is...$R FAILED $N" | tee -a $LOG_FILE
     exit 1
     else
-    echo -e "$2 is..$G SUCCESS $N" &>>$LOG_FILE
+    echo -e "$2 is..$G SUCCESS $N" | tee -a $LOG_FILE
     fi
 }
 
+USAGE(){
+    echo -e "$R USAGE:: $N sudo sh 13-redirectories.sh package1 package2..."
+    exit 1
+}
+
+echo "Script started executing at: $(date)"
+ 
 CHECK_ROOT
+
+if [ $# -eq =0 ]
+then
+    USAGE
+fi
 
 for package in $@
 do
-    dnf list installed $package
+    dnf list installed $package | tee -a $LOG_FILE
     if [ $? -ne 0 ]
     then
-        echo "$package is not installed, going to install"
-        dnf install $package -y
+        echo -e "$package is not installed, going to install" | tee -a $LOG_FILE
+        dnf install $package -y | tee -a $LOG_FILE
         VALIDATE $? "Installing $package"
     else
-        echo "$package is allready installed..nothing to do"
+        echo "$package is allready $Y installed..nothing to do $N" | tee -a $LOG_FILE
     fi
 done
